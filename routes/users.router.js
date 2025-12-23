@@ -9,8 +9,8 @@ const service = new UserService();
 
 router.get('/', async (req, res, next) => {
   try {
-    const categories = await service.find();
-    res.json(categories);
+    const users = await service.findAll();
+    res.json(users);
   } catch (error) {
     next(error);
   }
@@ -42,15 +42,15 @@ router.post('/',
   }
 );
 
-router.patch('/:id',
+router.patch('/:id',  
   validatorHandler(getUserSchema, 'params'),
   validatorHandler(updateUserSchema, 'body'),
   async (req, res, next) => {
     try {
       const { id } = req.params;
       const body = req.body;
-      const category = await service.update(id, body);
-      res.json(category);
+      const updatedUser = await service.update(id, body);
+      res.json(updatedUser);
     } catch (error) {
       next(error);
     }
