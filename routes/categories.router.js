@@ -1,7 +1,9 @@
 const express = require('express');
+const passport = require ('passport');
 
 const CategoryService = require('./../services/category.service');
 const validatorHandler = require('./../middlewares/validator.handler');
+const { checkRoles } = require('../middlewares/auth.handler');
 const { createCategorySchema, updateCategorySchema, getCategorySchema } = require('./../schemas/category.schema');
 
 const router = express.Router();
@@ -30,6 +32,8 @@ router.get('/:id',
 );
 
 router.post('/',
+  passport.authenticate('jwt', {session: false}),
+  checkRoles('Admin', 'Customer'),
   validatorHandler(createCategorySchema, 'body'),
   async (req, res, next) => {
     try {
