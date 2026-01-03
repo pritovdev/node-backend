@@ -1,4 +1,5 @@
 const express = require('express');
+const passport = require('passport');
 
 const OrderService = require('../services/order.service');
 const { createOrderSchema, getOrderSchema, addItemSchema } = require('../schemas/order.schema');
@@ -46,16 +47,20 @@ router.post('/specific',
 );
   
 router.post('/',
-  validatorHandler(createOrderSchema, 'body'),
+  passport.authenticate('jwt', {session: false}),
+  //validatorHandler(createOrderSchema, 'body'),
   async (req, res, next) => {
     try {
-      const data = req.body;
+      const user = req.user;
+      const data = {
+        'userId': user.sub
+      }
       const newOrder = await service.create(data);
       res.status(201).json(newOrder);
     } catch(error) {
       next(error)
     }
-  }
+  } 
 );
 
 router.post('/add-item',

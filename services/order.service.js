@@ -8,7 +8,16 @@ class OrderService {
 
   }
   async create(data) {
-    const newOrder = await models.order.create(data);
+    console.log(data.userId);
+    const user = await models.store_user.findByPk(data.userId, {
+      include: ['customer']
+    });
+    console.log(user);
+    const customerId = user.dataValues.customer.dataValues.id;
+    const orderData = {
+      "customerId": customerId
+    }
+    const newOrder = await models.order.create(orderData);
     return newOrder;
   }
 
